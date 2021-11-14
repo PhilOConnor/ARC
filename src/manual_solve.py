@@ -10,14 +10,61 @@ import re
 ### result. Name them according to the task ID as in the three
 ### examples below. Delete the three examples. The tasks you choose
 ### must be in the data/training directory, not data/evaluation.
-def solve_6a1e5592(x):
+def solve_d4f3cd78(x):
+    # Iterate through the grid to find the top and bottom lines (have value of 5) and the box they enclose
+    for i in range(x.shape[0]):
+        top_line = np.where(x[i]==5)
+
+        # Find the top line
+        if len(top_line[0])>0:
+            #print(i, top_line[0])
+            break
+    
+    # to find the bottom line start at the bottom grid and work upwards
+    for j in range(x.shape[0]-1,0,-1):
+        bottom_line = np.where(x[j]==5)
+        # Find the bottom line
+        if len(bottom_line[0])>0:
+            #print(j, bottom_line[0])
+            break
+    
+    # Fill the contents of this grid with the 8 value
+    for k in range(i+1, j):
+        line = x[k]
+        line[top_line[0][1]: top_line[0][-1]]=8
+
+        
+    # Create a grid in local space and identify the opening
+    grid = x[i:j+1, top_line[0][0]: top_line[0][-1]+1]
+    opening_local = np.argwhere(grid == 0)
+
+    # Create an entry for the opening we can use to locate it in the global grid 
+    grid[opening_local[0][0],opening_local[0][1]]=10
+
+    opening_global = [np.where(x==10)[0][0], np.where(x==10)[1][0]]
+    x[opening_global[0] ,opening_global[1]] =8
+    for i in range(4):
+        # North facing opening
+        if x[opening_global[0] -1,opening_global[1]] == 0:
+            x[0:opening_global[0] ,opening_global[1]] = 8
+            #print("North facing")
+
+            # South facing opening
+        elif x[opening_global[0] +1,opening_global[1]] == 0:
+            x[opening_global[0]: ,opening_global[1]] =8
+            #print("South facing")
+
+            # East facing opening
+        elif x[opening_global[0] ,opening_global[1]+1] == 0:
+            x[opening_global[0] ,opening_global[1]:] = 8
+            #print("East facing")
+
+            # West facing opening
+        elif x[opening_global[0] ,opening_global[1]-1] == 0:
+            x[opening_global[0] ,:opening_global[1]] =8
+            #print("West facing")
     return x
 
-def solve_b2862040(x):
-    return x
-
-def solve_05269061(x):
-    return x
 
 
 def main():
