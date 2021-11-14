@@ -65,7 +65,93 @@ def solve_d4f3cd78(x):
             #print("West facing")
     return x
 
+def solve_2dd70a9a(x):
+    x_ = x.copy()
+    # State action pairs - this modifies the current position depending on the current direction of travel
+    state_action = {'north':(1, 0), 'south':(-1, 0), 'east': (0, 1), 'west':(0, -1)}
 
+    # Locate the start and end points
+    start_point = np.argwhere(x ==3)
+    end_point = np.argwhere(x ==2)
+
+    # Define the 
+    y_range, x_range = x.shape
+
+    def orientation(start_point, end_point):
+        # Get general orientation of the start points - the end points also have the same orientation
+        if start_point[0][0] != start_point[1][0]:
+            orientation='NS'
+            # Now find out if the starting position is north or south facing
+            if start_point[0][0] > end_point[0][0]:
+                direction = 'north'
+                initial_position = [start_point[0][0], start_point[0][1]]          
+            elif start_point[0][0] < end_point[0][0]:
+                direction = 'south'
+                initial_position = [start_point[1][0], start_point[1][1]]
+
+        # If not North/South facing then it must be East/West
+        elif start_point[0][1] != start_point[1][1]:
+            orientation='EW'
+            # If the start point is further right than the finish then we must go towards the west
+            if start_point[0][1] > end_point[0][1]:
+                direction = 'west'
+                initial_position = [start_point[0][0], start_point[0][1]]
+            elif start_point[0][1] < end_point[0][1]:
+                direction = 'east'
+                initial_position = [start_point[1][0], start_point[1][1]]
+
+            # If the start and end points are aligned, go in the direction of more space
+            elif start_point[0][1] == end_point[0][1]:
+                if start_point[0][1]>x_range/2:
+                    direction = 'west'
+                    initial_position = [start_point[0][0], start_point[0][1]]
+                else: 
+                    direction = 'east'
+                    initial_position = [start_point[1][0], start_point[1][1]]
+        return direction, initial_position
+
+    direction, initial_position = orientation(start_point, end_point)
+
+    # Define the actions for each state
+    state_action = {'north':(1, 0), 'south':(-1, 0), 'east': (0, -1), 'west':(0, 1)}
+    current_position = initial_position.copy() 
+    success='no'
+    counter_=0
+    for i in range(5000):
+        
+        # If the current position is on the boundary, reset to the initial conditions to avoid falling off the edge of the world
+        if current_position[0] == 0 or current_position[0] == y_range-1 or current_position[1] == 0 or current_position[1] == x_range-1:
+            direction, initial_position = orientation(start_point, end_point)
+            current_position = initial_position
+            x_ = x.copy()
+        else:
+            pass
+        # If the next step has the value 2 to show an end point, print the grid and stop the program
+        if x_[np.subtract(current_position,  state_action[direction])[0],np.subtract(current_position,  state_action[direction])[1]] == 2:
+            print(x)
+            success='yes'
+            break
+        else:
+            pass
+        # If the next gridspace is a 0, take the appropriate move according to the state-action dictionary and update cell value and the current position
+        if x_[np.subtract(current_position,  state_action[direction])[0],np.subtract(current_position,  state_action[direction])[1]] ==0:
+            current_position = np.subtract(current_position,  state_action[direction])[0],np.subtract(current_position,  state_action[direction])[1]
+            x_[current_position] = 3
+            #print(f'Initial point {initial_position}. Direction: {direction}. Current position: {current_position}')
+            
+        # If the next grid space is an 8, take a random direction depending on the current state of the system.
+        
+        elif x_[np.subtract(current_position,  state_action[direction])[0],np.subtract(current_position,  state_action[direction])[1]] == 8:
+
+            if (direction == 'east') or (direction == 'west'):
+                direction = random.choice(["north", "south"])
+            
+
+            elif (direction == 'north') or (direction == 'south'):
+                direction = random.choice(["east", "west"])
+
+        i +=1
+    return x_
 
 def main():
     # Find all the functions defined in this file whose names are
