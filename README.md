@@ -69,3 +69,5 @@ When you're done with a task, use the "load task" button to open a new task.
 Problem 1: 
 
 Problem 2: Solution will now reset to the initial conditions where the terminating condition is not met or something weird happens.
+
+Problem 3: Solution will allow a rabbit to find any holes in garden walls and show any gardens at risk of losing its flowers. 

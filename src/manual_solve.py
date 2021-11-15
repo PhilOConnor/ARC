@@ -156,6 +156,68 @@ def solve_2dd70a9a(x):
             
     return x_
 
+    
+def solve_83302e8f(x):
+    # create a copy to avoid overwriting the input
+    x_ = x.copy()
+    import itertools
+
+    # Create an array of gaps in walls - these will be used to 'seed' the yellows to make sure they propogate through the walls.
+    gaps = np.empty((0,2), int)
+    # find out how regular the walls are, the test space is square and walls are regularly spaced so only need to check one direction
+    spacing = np.argwhere(x_[0]!=0)
+    # Find the holes in the walls, first on the N/S running walls, then on the E/W running walls
+    for row, i in itertools.product(range(len(x_)), spacing):
+        if x_[row][i][0] ==0:
+            #print(row, i[0], x[row][i][0], "vertical")
+            gap = np.array([row, i[0]])
+            gaps = np.concatenate((gaps,[gap]))
+
+        elif x[i][0][row] ==0:
+            #print(i[0], row, x[i][0][row], "horizontal")
+            gap = np.array([i[0], row])
+            gaps = np.concatenate((gaps,[gap]))
+    
+    # Where there are gaps, make it yellow/4
+    for gap in gaps:
+        x_[gap[0], gap[1]] = 4
+    
+    # Create the directions of travel for our rabbit - N/S/E/W
+    directions =[[1, 0],
+                 [-1, 0],
+                 [0, 1],
+                 [0, -1]]
+    # It takes a couple of runs to allow the 4s to propogate through the available space
+    for run in ['run_1', 'run_2', 'run_3']:
+        # Now iterate for every grid space, gap and direction
+        for i, gap, direction in itertools.product(range(len(x)**2), gaps, directions):
+            # Seed the current position at a gap in the wall
+            current_pos = gap
+            # Some movements are illegal, break out of the loop and move onto the next gap
+            try:
+                # While, for a given grid space, if the next step in a given direction is into a blank space do...
+                while x_[np.subtract(current_pos[0], direction[0]), np.subtract(current_pos[1], direction[1])] == 0 :
+                    # If the next step would take our rabbit off the edge of the earth, stop and move onto the next gap. No time for adventures here
+                    if (np.subtract(current_pos[0], direction[0]) < 0 ) or (np.subtract(current_pos[1], direction[1]) < 0) :
+                        break
+                    elif (np.subtract(current_pos[0], direction[0]) >= len(x)) | (np.subtract(current_pos[1], direction[1]) >= len(x)) :
+                        break
+                    # If the next step wont be detrimental to our rabbits health, re-assign the cell value to a 4 and update the current position for iterating
+                    else:
+                        x_[np.subtract(current_pos[0], direction[0]), np.subtract(current_pos[1], direction[1])] = 4
+                        current_pos = np.subtract(current_pos[0], direction[0]), np.subtract(current_pos[1], direction[1])
+                        #print(current_pos, direction,np.subtract(current_pos[0], direction[0]), np.subtract(current_pos[1], direction[1]) )
+
+            except:
+                pass
+        # Update our gaps array with all the cells marked 4 and loop through again - this will catch any cells we havent reached 
+        # yet in case the rabbit has painted itself into a corner
+        gaps = np.argwhere(x_==4)
+    
+    # Finally, any remaining 0s need to be assigned to 3s.
+    x_[x_==0] = 3
+    return x_
+
 def main():
     # Find all the functions defined in this file whose names are
     # like solve_abcd1234(), and run them.
