@@ -115,10 +115,8 @@ def solve_2dd70a9a(x):
     # Define the actions for each state
     state_action = {'north':(1, 0), 'south':(-1, 0), 'east': (0, -1), 'west':(0, 1)}
     current_position = initial_position.copy() 
-    success='no'
-    counter_=0
-    for i in range(5000):
-        
+    for i in range(100):
+        pos1 = current_position
         # If the current position is on the boundary, reset to the initial conditions to avoid falling off the edge of the world
         if current_position[0] == 0 or current_position[0] == y_range-1 or current_position[1] == 0 or current_position[1] == x_range-1:
             direction, initial_position = orientation(start_point, end_point)
@@ -137,6 +135,7 @@ def solve_2dd70a9a(x):
         if x_[np.subtract(current_position,  state_action[direction])[0],np.subtract(current_position,  state_action[direction])[1]] ==0:
             current_position = np.subtract(current_position,  state_action[direction])[0],np.subtract(current_position,  state_action[direction])[1]
             x_[current_position] = 3
+            pos2 = current_position
             #print(f'Initial point {initial_position}. Direction: {direction}. Current position: {current_position}')
             
         # If the next grid space is an 8, take a random direction depending on the current state of the system.
@@ -149,8 +148,12 @@ def solve_2dd70a9a(x):
 
             elif (direction == 'north') or (direction == 'south'):
                 direction = random.choice(["east", "west"])
-
-        i +=1
+        # If there is any situation that is not caught in the above, reset to the initial conditions
+        else:
+            direction, initial_position = orientation(start_point, end_point)
+            current_position = initial_position
+            x_ = x.copy()
+            
     return x_
 
 def main():
