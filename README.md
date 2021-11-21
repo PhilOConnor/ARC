@@ -65,6 +65,17 @@ After you've obtained the correct answer for the current test input grid, you ca
 
 When you're done with a task, use the "load task" button to open a new task.
 
+# Student Details
+
+|Field   | Value |
+|--------|-------|
+|Name    | Philip O' Connor|
+|Student # | 21249304 |
+| GitHub link |https://github.com/PhilOConnor/ARC |
+|Task 1    |d4f3cd78 |
+|Task 2    | 2dd70a9a |
+|Task 3    | 83302e8f |
+
 ### Solutions
 Problem 1: 
 
