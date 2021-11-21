@@ -9,7 +9,7 @@
 |Task 2    | 2dd70a9a |
 |Task 3    | 83302e8f |
 
-### Solutions
+### Solutions <br>
 ##Task 1  - d4f3cd78: <br>
 ![Task 1: d4f3cd78](/images/d4f3cd78.JPG)  <br>
 Script will iterate from top to bottom and bottom to top to find a row of 5s. Once found, these are used to define the box boundary.
