@@ -10,12 +10,17 @@
 |Task 3    | 83302e8f |
 
 ### Solutions
-Problem 1: 
+Task 1  - d4f3cd78: 
+![Task 1: d4f3cd78](/images/d4f3cd78.JPG) 
+Script will iterate from top to bottom and bottom to top to find a row of 5s. Once found, these are used to define the box boundary.
+The interior of the box is filled with the coloured cells.
+A local gridspace is created using the box boundary - the benefit of this is it allows me to say any reamaining 0 must be the opening. <br>
+I fill this empty cell with a value not found in ARC - this allows me to search in the global gridspace for the opening and evaluate the direction of the opening. Once determined, slice the array as appropriate and assign the correct colour to the target cells
 
-![Task 1: d4f3cd78](/images/d4f3cd78.JPG) <br>
 
-Problem 2: Solution will now reset to the initial conditions where the terminating condition is not met or something weird happens. <br>
+Problem 2 - 2dd70a9a: 
 ![Task 1: d4f3cd78](/images/2dd70a9a.JPG)
 
-Problem 3: Solution will allow a rabbit to find any holes in garden walls and show any gardens at risk of losing its flowers. <br>
+Problem 3:
+
 ![Task 1: d4f3cd78](/images/83302e8f.JPG)
