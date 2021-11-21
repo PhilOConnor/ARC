@@ -10,7 +10,21 @@ import re
 ### result. Name them according to the task ID as in the three
 ### examples below. Delete the three examples. The tasks you choose
 ### must be in the data/training directory, not data/evaluation.
+"""
+Name           : Philip O Connor
+Student Number : 21249304
+Tasks          : d4f3cd78, 2dd70a9a, 83302e8f
+GitHub link    : https://github.com/PhilOConnor/ARC
+
+"""
 def solve_d4f3cd78(x):
+    """
+    Goal - Fill in the box and continue filling in cells in the direction of the opening in the box.
+    Solution - 
+        1) Locate the box - this was done by scanning from the top and bottom for the boundary. Once found fill all the cells inside the boundary with value 8
+        2) Locate the opening - With the boundary located, and center filled, only one cell will have a 0 - this must be the opening.
+        3) Determine orientation - What direction is 'into space', slice the array and fill it in the correct direction.
+    """
     # Iterate through the grid to find the top and bottom lines (have value of 5) and the box they enclose
     for i in range(x.shape[0]):
         top_line = np.where(x[i]==5)
@@ -37,12 +51,14 @@ def solve_d4f3cd78(x):
     # Create a grid in local space and identify the opening
     grid = x[i:j+1, top_line[0][0]: top_line[0][-1]+1]
     opening_local = np.argwhere(grid == 0)
-
-    # Create an entry for the opening we can use to locate it in the global grid 
+    
+    # Give the local opening a value not found anywhere in ARC so we can use this value to locate it in the global grid regardless of boundary colour in future
     grid[opening_local[0][0],opening_local[0][1]]=10
 
+    # Find the opening in the global space and give it a value 8 now it's been correctly located
     opening_global = [np.where(x==10)[0][0], np.where(x==10)[1][0]]
     x[opening_global[0] ,opening_global[1]] =8
+    # Find out which direction is into open space, once  found slice the array to give the remaining cells in that direction and assign 8 to these cells.
     for i in range(4):
         # North facing opening
         if x[opening_global[0] -1,opening_global[1]] == 0:
@@ -66,22 +82,36 @@ def solve_d4f3cd78(x):
     return x
 
 def solve_2dd70a9a(x):
+    """
+    Goal - Find a route between a start and end point, when the next cell is an 8, change direction perpendicular to the current direction of travel.
+    Solution -
+     1) Find and determine the orientation of start and end points.
+     2) Set up a state-action dictionary defining the next action depending on the contents of the next cell (continue or change direction)
+     3) Take the step in that direction and iterate, if this path leads to the end point, return it. 
+        If the explorer gets 'stuck' and does not move for an iteration, reset to the initial conditions.
+    """
+
+    import random
     x_ = x.copy()
     # State action pairs - this modifies the current position depending on the current direction of travel
-    state_action = {'north':(1, 0), 'south':(-1, 0), 'east': (0, 1), 'west':(0, -1)}
+    
 
     # Locate the start and end points
     start_point = np.argwhere(x ==3)
     end_point = np.argwhere(x ==2)
 
-    # Define the 
+    # Define the environment boundary - will be used to keep the explorer 'in bounds'
     y_range, x_range = x.shape
 
     def orientation(start_point, end_point):
-        # Get general orientation of the start points - the end points also have the same orientation
+        """
+        Get general orientation of the start points - the end points also have the same orientation
+        """
+        # If 0th element of each start point is different then the points are not on the same line... therefore muse be N/S orientation
         if start_point[0][0] != start_point[1][0]:
             orientation='NS'
             # Now find out if the starting position is north or south facing
+            # If the start point has a higher 0th element value, it is further down the page -> End point is above it so must travel north.
             if start_point[0][0] > end_point[0][0]:
                 direction = 'north'
                 initial_position = [start_point[0][0], start_point[0][1]]          
@@ -114,8 +144,11 @@ def solve_2dd70a9a(x):
 
     # Define the actions for each state
     state_action = {'north':(1, 0), 'south':(-1, 0), 'east': (0, -1), 'west':(0, 1)}
+    # Before iterating, set up the current position as the start point
     current_position = initial_position.copy() 
-    for i in range(100):
+    # This can take a lot of iterations to solve - I tried looking at something like a decision tree - so steps werent repeated but couldnt figure it out.
+    for i in range(1000):
+        # Take the current position - if pos1 == pos2 at the end then it's stuck in a corner and needs to be reset to the initial conditions.
         pos1 = current_position
         # If the current position is on the boundary, reset to the initial conditions to avoid falling off the edge of the world
         if current_position[0] == 0 or current_position[0] == y_range-1 or current_position[1] == 0 or current_position[1] == x_range-1:
@@ -124,9 +157,10 @@ def solve_2dd70a9a(x):
             x_ = x.copy()
         else:
             pass
+
         # If the next step has the value 2 to show an end point, print the grid and stop the program
         if x_[np.subtract(current_position,  state_action[direction])[0],np.subtract(current_position,  state_action[direction])[1]] == 2:
-            print(x)
+            #print(x)
             success='yes'
             break
         else:
@@ -158,7 +192,15 @@ def solve_2dd70a9a(x):
 
     
 def solve_83302e8f(x):
-    # create a copy to avoid overwriting the input
+    """
+    Goal - if areas are connected by a hole in the wall, colour them yellow, if the walls surrounding them are unbroken, they are green.
+    Solution -
+        1) Find locations for the holes in the walls and 'seed' them with a yellow cell.
+        2) Set up permitted directions of travel
+        3) Evaluate at each gap, the every cell and direction availble - if the next cell is blank, make it yellow and move onto the next iteration
+        4) Iterate through 3 as the number of 'gaps' increases (gaps are yellows, a carry over from the initial problem statement) so yellows propogate through the allowed cells.
+        5) Any cells remaining blank must be surrounded by a solid wall, so they can be made green now.
+    """
     x_ = x.copy()
     import itertools
 
@@ -182,36 +224,35 @@ def solve_83302e8f(x):
     for gap in gaps:
         x_[gap[0], gap[1]] = 4
     
-    # Create the directions of travel for our rabbit - N/S/E/W
+    # Create the directions of travel for our explorer - N/S/E/W
     directions =[[1, 0],
                  [-1, 0],
                  [0, 1],
                  [0, -1]]
-    # It takes a couple of runs to allow the 4s to propogate through the available space
+    # It takes a couple of runs to allow the 4s to propogate through the available space - the array of yellow cells needs to be updated after a while to get remaining ones in corners
     for run in ['run_1', 'run_2', 'run_3']:
         # Now iterate for every grid space, gap and direction
         for i, gap, direction in itertools.product(range(len(x)**2), gaps, directions):
             # Seed the current position at a gap in the wall
             current_pos = gap
-            # Some movements are illegal, break out of the loop and move onto the next gap
+            # Some movements are illegal, break out of the loop and move onto the next gap (move outside the array)
             try:
                 # While, for a given grid space, if the next step in a given direction is into a blank space do...
                 while x_[np.subtract(current_pos[0], direction[0]), np.subtract(current_pos[1], direction[1])] == 0 :
-                    # If the next step would take our rabbit off the edge of the earth, stop and move onto the next gap. No time for adventures here
+                    # If the next step would take our explorer off the edge of the earth, stop and move onto the next gap. No time for adventures/monsters here
                     if (np.subtract(current_pos[0], direction[0]) < 0 ) or (np.subtract(current_pos[1], direction[1]) < 0) :
                         break
                     elif (np.subtract(current_pos[0], direction[0]) >= len(x)) | (np.subtract(current_pos[1], direction[1]) >= len(x)) :
                         break
-                    # If the next step wont be detrimental to our rabbits health, re-assign the cell value to a 4 and update the current position for iterating
+                    # If the next step wont be detrimental to our explorers health, re-assign the cell value to a 4 and update the current position for the next iteration
                     else:
                         x_[np.subtract(current_pos[0], direction[0]), np.subtract(current_pos[1], direction[1])] = 4
                         current_pos = np.subtract(current_pos[0], direction[0]), np.subtract(current_pos[1], direction[1])
-                        #print(current_pos, direction,np.subtract(current_pos[0], direction[0]), np.subtract(current_pos[1], direction[1]) )
 
             except:
                 pass
         # Update our gaps array with all the cells marked 4 and loop through again - this will catch any cells we havent reached 
-        # yet in case the rabbit has painted itself into a corner
+        # yet in case the explorer has painted itself into a corner
         gaps = np.argwhere(x_==4)
     
     # Finally, any remaining 0s need to be assigned to 3s.
