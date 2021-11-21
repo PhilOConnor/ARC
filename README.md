@@ -11,7 +11,7 @@
 
 ### Solutions
 Problem 1: 
-[Task 1-d4f3cd78](/images/d4f3cd78.jpg)
+![Task 1-d4f3cd78](/images/d4f3cd78.jpg)
 Problem 2: Solution will now reset to the initial conditions where the terminating condition is not met or something weird happens.
 
 Problem 3: Solution will allow a rabbit to find any holes in garden walls and show any gardens at risk of losing its flowers. 
