@@ -10,7 +10,7 @@
 |Task 3    | 83302e8f |
 
 ### Solutions <br>
-##Task 1  - d4f3cd78: <br>
+## Task 1  - d4f3cd78: <br>
 ![Task 1: d4f3cd78](/images/d4f3cd78.JPG)  <br>
 Script will iterate from top to bottom and bottom to top to find a row of 5s. Once found, these are used to define the box boundary.
 The interior of the box is filled with the coloured cells.
@@ -21,6 +21,6 @@ I fill this empty cell with a value not found in ARC - this allows me to search 
 ## Task 2 - 2dd70a9a: <br>
 ![Task 1: d4f3cd78](/images/2dd70a9a.JPG)
 
-## Task 3:<br>
+## Task 3 - 83302e8f:<br>
 
 ![Task 1: d4f3cd78](/images/83302e8f.JPG)
