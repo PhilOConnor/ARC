@@ -28,7 +28,8 @@ My solutions required quite a bit of iterating, if these tasks grew, they could 
 - task 3 - O(n^2) as each cell is iterated over
 
 The random module was also used in the second and third task to reduce the amount of conditions
-hard coded, I could randomly move about when needed and iterate until a solution was found.
+hard coded, I could randomly move about when needed and iterate until a solution was found. Itertools was used to help tidy up the loop in task 3
+as the loop had 3 values to unpack.
 In task 2, the number of random iterations could have been reduced if I had been able to store the
 actions per iteration and prevent them from reoccurring, but I was not able to think through this so the number of
 iterations is pretty high to make sure a path to the end point is found. Task 3 took two loops to make sure it was 
