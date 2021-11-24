@@ -16,14 +16,40 @@ Student Number : 21249304
 Tasks          : d4f3cd78, 2dd70a9a, 83302e8f
 GitHub link    : https://github.com/PhilOConnor/ARC
 
+All three tasks are solved for training and test cases.
+
+The three tasks below were solved mostly using base python, with numpy for arrays, to find 
+elements in arrays and to compute the action for state-action pairs. Numpy being as powerful
+as it is, I dont think it was utiliesd fully, but I'm not sure I could have used vectorising or matrix operations as my solutions were,
+for the most part one a cell by cell level, but there are probably more efficient ways of taking the same actions I took.
+My solutions required quite a bit of iterating, if these tasks grew, they could become very cumbersome an the number of elements (n) in the array increases.
+- task 1 - O(n) - iterations are on a row level
+- task 2 - O(n^2) - as each cell is iterated over
+- task 3 - O(n^2) as each cell is iterated over
+
+The random module was also used in the second and third task to reduce the amount of conditions
+hard coded, I could randomly move about when needed and iterate until a solution was found.
+In task 2, the number of random iterations could have been reduced if I had been able to store the
+actions per iteration and prevent them from reoccurring, but I was not able to think through this so the number of
+iterations is pretty high to make sure a path to the end point is found. Task 3 took two loops to make sure it was 
+successful as the script would sometimes paint itself into a corner and miss the rest of the cells it needed to pass through.
+
+The tasks 2 & 3 were solved with mostly a similar approach, find a start point, determine a 
+direction to go in, when the state needs to be changed, take an action and repeat until the goal is reached.
+Task 2 was similar to a simplified Darpa grand challenge and an FSM was used in Boss to keep track of the cars 
+current state - ['How Smart Mahcines Think', Sean Gerrish] - so it would also work for this task. As it worked so well
+I used another one for task 3.  
+
+
 """
 def solve_d4f3cd78(x):
     """
-    Goal - Fill in the box and continue filling in cells in the direction of the opening in the box.
+    Goal - Fill in the box and continue filling in cells in the direction of the opening in the box - Object detection.
     Solution - 
         1) Locate the box - this was done by scanning from the top and bottom for the boundary. Once found fill all the cells inside the boundary with value 8
         2) Locate the opening - With the boundary located, and center filled, only one cell will have a 0 - this must be the opening.
         3) Determine orientation - What direction is 'into space', slice the array and fill it in the correct direction.
+    Success - All training and test arrays pass
     """
     # Iterate through the grid to find the top and bottom lines (have value of 5) and the box they enclose
     for i in range(x.shape[0]):
@@ -83,12 +109,13 @@ def solve_d4f3cd78(x):
 
 def solve_2dd70a9a(x):
     """
-    Goal - Find a route between a start and end point, when the next cell is an 8, change direction perpendicular to the current direction of travel.
+    Goal - Find a route between a start and end point, when the next cell is an 8, change direction perpendicular to the current direction of travel - Finite state machine.
     Solution -
      1) Find and determine the orientation of start and end points.
      2) Set up a state-action dictionary defining the next action depending on the contents of the next cell (continue or change direction)
      3) Take the step in that direction and iterate, if this path leads to the end point, return it. 
         If the explorer gets 'stuck' and does not move for an iteration, reset to the initial conditions.
+    Success - All training and test arrays pass
     """
 
     import random
@@ -193,13 +220,14 @@ def solve_2dd70a9a(x):
     
 def solve_83302e8f(x):
     """
-    Goal - if areas are connected by a hole in the wall, colour them yellow, if the walls surrounding them are unbroken, they are green.
+    Goal - if areas are connected by a hole in the wall, colour them yellow, if the walls surrounding them are unbroken, they are green - finite state machine and object detection.
     Solution -
         1) Find locations for the holes in the walls and 'seed' them with a yellow cell.
         2) Set up permitted directions of travel
         3) Evaluate at each gap, the every cell and direction availble - if the next cell is blank, make it yellow and move onto the next iteration
         4) Iterate through 3 as the number of 'gaps' increases (gaps are yellows, a carry over from the initial problem statement) so yellows propogate through the allowed cells.
         5) Any cells remaining blank must be surrounded by a solid wall, so they can be made green now.
+    Success - All training and test arrays pass
     """
     x_ = x.copy()
     import itertools
