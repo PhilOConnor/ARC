@@ -34,6 +34,7 @@ actions per iteration and prevent them from reoccurring, but I was not able to t
 iterations is pretty high to make sure a path to the end point is found. Task 3 took two loops to make sure it was 
 successful as the script would sometimes paint itself into a corner and miss the rest of the cells it needed to pass through.
 
+Task 1 I thought of an an object detection problem - Find the box, fill it, then find the opening and fill the cells in that direction.
 The tasks 2 & 3 were solved with mostly a similar approach, find a start point, determine a 
 direction to go in, when the state needs to be changed, take an action and repeat until the goal is reached.
 Task 2 was similar to a simplified Darpa grand challenge and an FSM was used in Boss to keep track of the cars 
