@@ -22,10 +22,8 @@ The three tasks below were solved mostly using base python, with numpy for array
 elements in arrays and to compute the action for state-action pairs. Numpy being as powerful
 as it is, I dont think it was utiliesd fully, but I'm not sure I could have used vectorising or matrix operations as my solutions were,
 for the most part one a cell by cell level, but there are probably more efficient ways of taking the same actions I took.
-My solutions required quite a bit of iterating, if these tasks grew, they could become very cumbersome an the number of elements (n) in the array increases.
-- task 1 - O(n) - iterations are on a row level
-- task 2 - O(n^2) - as each cell is iterated over
-- task 3 - O(n^2) as each cell is iterated over
+My solutions required quite a bit of iterating, if these tasks grew, they could become very cumbersome an the number of elements in the array increases.
+
 
 The random module was also used in the second and third task to reduce the amount of conditions
 hard coded, I could randomly move about when needed and iterate until a solution was found. Itertools was used to help tidy up the loop in task 3
